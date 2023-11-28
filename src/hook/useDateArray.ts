@@ -7,8 +7,8 @@ const useDateArray = (currentYear: number, currentMonth: number) => {
     const lastDayOfMonth = dayjs(new Date(currentYear, currentMonth + 1, 0));
 
     let startDay = firstDayOfMonth.startOf("week");
-    let endDay = lastDayOfMonth.endOf("week");
-    let datesArray = [];
+    const endDay = lastDayOfMonth.endOf("week");
+    const datesArray = [];
 
     while (startDay.isBefore(endDay) || startDay.isSame(endDay, "day")) {
       datesArray.push(startDay.format("YYYY-MM-DD"));

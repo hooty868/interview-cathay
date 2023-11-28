@@ -1,13 +1,12 @@
 "use client";
 
-import { memo, useCallback, useMemo, useRef, useState } from "react";
-import dayjs from "dayjs";
-
 import DateButton from "component/atoms/button/DateButton/DateButton";
 import MouthSelector from "component/Molecules/selector/MouthSelector/MouthSelector";
-import useOutsideClick from "hook/useOutsideClick";
+import dayjs from "dayjs";
 import useDateArray from "hook/useDateArray";
-import { isToday, isSelected, isDisabled } from "utils/dateUtils";
+import useOutsideClick from "hook/useOutsideClick";
+import { memo, useCallback, useRef, useState } from "react";
+import { isDisabled, isSelected, isToday } from "utils/dateUtils";
 
 import styles from "./DatePicker.module.scss";
 
@@ -17,6 +16,8 @@ const DatePicker = () => {
   const [startDate, setStartDate] = useState<string | null>(null);
   const [endDate, setEndDate] = useState<string | null>(null);
   const pickerReference = useRef<HTMLDivElement>(null);
+
+  const dates = useDateArray(currentYear, currentMonth);
 
   const handleOutsideClick = () => {
     setStartDate(null);
@@ -40,8 +41,6 @@ const DatePicker = () => {
       setCurrentMonth((prevMonth) => prevMonth - 1);
     }
   }, [currentMonth]);
-
-  const dates = useDateArray(currentYear, currentMonth);
 
   const handleDateClick = useCallback(
     (clickedDate: string) => {
