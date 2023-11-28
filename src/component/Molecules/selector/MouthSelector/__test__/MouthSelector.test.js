@@ -1,6 +1,6 @@
 import React from "react";
 import { render, fireEvent, screen } from "@testing-library/react";
-import MouthSelector from "../MouthSelector"; // 调整路径以适应你的项目结构
+import MouthSelector from "../MouthSelector";
 
 describe("MouthSelector Component", () => {
   it("renders correctly", () => {

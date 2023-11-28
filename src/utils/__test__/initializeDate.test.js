@@ -1,4 +1,4 @@
-import { initializeDate } from "../dateUtils"; // replace with your actual file name
+import { initializeDate } from "../dateUtils";
 import dayjs from "dayjs";
 
 describe("initializeDate", () => {
