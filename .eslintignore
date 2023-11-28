@@ -6,3 +6,5 @@ dist/
 lint-staged.config.js
 next.config.js
 jest.config.js
+
+src/**/__test__/*.test.js

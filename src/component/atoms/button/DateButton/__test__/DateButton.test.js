@@ -13,7 +13,7 @@ describe("DateButton", () => {
   it("applies the today style if isToday is true", () => {
     render(<DateButton isToday>Today</DateButton>);
     const button = screen.getByText("Today");
-    expect(button).toHaveClass("today"); // Assuming 'today' is a class in your styles
+    expect(button).toHaveClass("today");
   });
 
   it("is disabled if isDisabled is true", () => {

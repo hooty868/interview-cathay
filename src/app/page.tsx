@@ -1,5 +1,5 @@
 import DatePicker from "component/Organisms/DatePicker/DatePicker";
-import styles from "./page.module.css";
+import styles from "./page.module.scss";
 
 export default function Home() {
   return (

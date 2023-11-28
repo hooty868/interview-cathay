@@ -1,5 +1,12 @@
 import dayjs from "dayjs";
 
+export const initializeDate = (date: string | undefined) => {
+  if (date && dayjs(date).isValid()) {
+    return dayjs(date).format("YYYY-MM-DD");
+  }
+  return null;
+};
+
 export const isToday = (date: string): boolean =>
   dayjs(date).format("YYYY-MM-DD") === dayjs().format("YYYY-MM-DD");
 

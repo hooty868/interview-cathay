@@ -1,20 +1,60 @@
 "use client";
 
-import DateButton from "component/atoms/button/DateButton/DateButton";
+import DateButton from "component/Atoms/button/DateButton/DateButton";
 import MouthSelector from "component/Molecules/selector/MouthSelector/MouthSelector";
 import dayjs from "dayjs";
 import useDateArray from "hook/useDateArray";
 import useOutsideClick from "hook/useOutsideClick";
-import { memo, useCallback, useRef, useState } from "react";
-import { isDisabled, isSelected, isToday } from "utils/dateUtils";
+import {
+  ReactElement,
+  memo,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import {
+  initializeDate,
+  isDisabled,
+  isSelected,
+  isToday,
+} from "utils/dateUtils";
 
 import styles from "./DatePicker.module.scss";
 
-const DatePicker = () => {
+interface DatePickerProps {
+  bodyClassName?: string;
+  selectorClassName?: string;
+  MouthButtonClassName?: string;
+  CustomTopDisplayTime?: (year: number, month: number) => ReactElement;
+  CustomDateButton?: (date: string) => ReactElement;
+  CustomPreviousButton?: ReactElement;
+  CustomNextButton?: ReactElement;
+  onDateChange?: (startDate: string | null, endDate: string | null) => void;
+  initialStartDate?: string;
+  initialEndDate?: string;
+}
+
+const DatePicker = ({
+  onDateChange,
+  initialStartDate,
+  initialEndDate,
+  bodyClassName = "",
+  selectorClassName = "",
+  MouthButtonClassName = "",
+  CustomTopDisplayTime,
+  CustomDateButton,
+  CustomPreviousButton,
+  CustomNextButton,
+}: DatePickerProps) => {
   const [currentMonth, setCurrentMonth] = useState(dayjs().month());
   const [currentYear, setCurrentYear] = useState(dayjs().year());
-  const [startDate, setStartDate] = useState<string | null>(null);
-  const [endDate, setEndDate] = useState<string | null>(null);
+  const [startDate, setStartDate] = useState<string | null>(
+    initializeDate(initialStartDate)
+  );
+  const [endDate, setEndDate] = useState<string | null>(
+    initializeDate(initialEndDate)
+  );
   const pickerReference = useRef<HTMLDivElement>(null);
 
   const dates = useDateArray(currentYear, currentMonth);
@@ -27,46 +67,62 @@ const DatePicker = () => {
   useOutsideClick(pickerReference, handleOutsideClick);
 
   const incrementMonth = useCallback(() => {
-    setCurrentMonth((prevMonth) => (prevMonth + 1) % 12);
-    if (currentMonth === 11) {
-      setCurrentYear((prevYear) => prevYear + 1);
-    }
-  }, [currentMonth]);
+    setCurrentMonth((prevMonth) => {
+      if (prevMonth === 11) {
+        setCurrentYear((prevYear) => prevYear + 1);
+        return 0;
+      }
+      return prevMonth + 1;
+    });
+  }, []);
 
   const decrementMonth = useCallback(() => {
-    if (currentMonth === 0) {
-      setCurrentMonth(11);
-      setCurrentYear((prevYear) => prevYear - 1);
-    } else {
-      setCurrentMonth((prevMonth) => prevMonth - 1);
-    }
-  }, [currentMonth]);
+    setCurrentMonth((prevMonth) => {
+      if (prevMonth === 0) {
+        setCurrentYear((prevYear) => prevYear - 1);
+        return 11;
+      }
+      return prevMonth - 1;
+    });
+  }, []);
 
   const handleDateClick = useCallback(
     (clickedDate: string) => {
-      if (
-        !startDate ||
-        (startDate && dayjs(clickedDate).isBefore(dayjs(startDate), "day"))
-      ) {
+      if (!startDate || dayjs(clickedDate).isBefore(dayjs(startDate), "day")) {
         setStartDate(clickedDate);
         setEndDate(null);
-      } else if (
-        !endDate ||
-        (endDate && dayjs(clickedDate).isAfter(dayjs(startDate), "day"))
-      ) {
+        return;
+      }
+
+      if (!endDate || dayjs(clickedDate).isAfter(dayjs(startDate), "day")) {
         setEndDate(clickedDate);
       }
     },
     [startDate, endDate]
   );
 
+  useEffect(() => {
+    onDateChange?.(startDate, endDate);
+  }, [startDate, endDate, onDateChange]);
+
   return (
-    <div className={styles.Container} ref={pickerReference}>
+    <div
+      className={`${bodyClassName} ${styles.Container}`}
+      ref={pickerReference}
+    >
       <MouthSelector
+        className={selectorClassName}
         onPreviousClick={decrementMonth}
         onNextClick={incrementMonth}
+        MouthButtonClassName={MouthButtonClassName}
+        CustomPreviousButton={CustomPreviousButton}
+        CustomNextButton={CustomNextButton}
       >
-        <p>{`${currentYear}年${currentMonth + 1}月`}</p>
+        {CustomTopDisplayTime ? (
+          CustomTopDisplayTime(currentYear, currentMonth)
+        ) : (
+          <p>{`${currentYear}年${currentMonth + 1}月`}</p>
+        )}
       </MouthSelector>
       <div className={styles["date-range"]}>
         {dates.map((date, index) => (
@@ -77,7 +133,9 @@ const DatePicker = () => {
             onClick={() => handleDateClick(date)}
             isDisabled={isDisabled(date)}
           >
-            {`${dayjs(date).format("D")}日`}
+            {CustomDateButton
+              ? CustomDateButton(dayjs(date).format("D"))
+              : `${dayjs(date).format("D")}日`}
           </DateButton>
         ))}
       </div>
