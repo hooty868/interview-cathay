@@ -23,8 +23,8 @@ You can start editing the page by modifying the src/app/page.tsx file. The file 
 
 To delve deeper into React and date-time handling, you can refer to the following resources:
 
-[React](https://reactjs.org/docs/getting-started.html) Official Documentation - Learn about React's features and API.
-[Day.js](https://day.js.org/) Documentation - Understand how to work with Day.js for date formatting and manipulation.
+- [React](https://reactjs.org/docs/getting-started.html) Official Documentation - Learn about React's features and API.
+- [Day.js](https://day.js.org/) Documentation - Understand how to work with Day.js for date formatting and manipulation.
 
 ## Deployment:
 You can choose to deploy this app to any cloud platform suitable for React applications.

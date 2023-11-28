@@ -7,15 +7,19 @@ const useDateArray = (currentYear: number, currentMonth: number) => {
     const lastDayOfMonth = dayjs(new Date(currentYear, currentMonth + 1, 0));
 
     let startDay = firstDayOfMonth.startOf("week");
-    const endDay = lastDayOfMonth.endOf("week");
-    const datesArray = [];
+    let endDay = lastDayOfMonth.endOf("week");
 
+    if (endDay.diff(startDay, "day") < 34) {
+      endDay = startDay.add(34, "day");
+    }
+
+    const datesArray = [];
     while (startDay.isBefore(endDay) || startDay.isSame(endDay, "day")) {
       datesArray.push(startDay.format("YYYY-MM-DD"));
       startDay = startDay.add(1, "day");
     }
 
-    return datesArray;
+    return datesArray.slice(0, 35);
   }, [currentYear, currentMonth]);
 
   return dates;
